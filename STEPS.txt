@@ -1,0 +1,84 @@
+started Venv
+ctrl+shift+p -> select interpreter -> create venv
+
+installed the req. packages
+
+70% train
+15% validation
+15% test
+
+imported images and their corresponding labels(segmentation masks)
+
+inspect images
+0 = ulcer
+
+create yolo labels representing:
+        class x_center y_center width height
+
+verify and visualise
+
+create yolo_detaction and split images into train, test, val
+
+
+
+
+
+in detection/ train_yolo
+
+| Setting    |   Value | Reason                              |
+| ---------- | ------: | ----------------------------------- |
+| Model      | YOLOv8n | Lightweight starting model          |
+| Epochs     |      50 | Initial training                    |
+| Image size |     224 | Your source images are 224×224      |
+| Batch      |       8 | Safer for limited memory/CPU        |
+| Patience   |      10 | Stops if validation stops improving |
+| Workers    |       0 | Safer on Windows                    |
+after yolo train we will get the runs folder containg:
+best.pt
+This is the model checkpoint with the best validation performance during training.
+last.pt
+This is the checkpoint from the final training epoch.
+
+for prediction we use best.pt
+
+
+the do validate_yolo:
+Validation Results
+------------------
+Precision : 0.8571063122748626
+Recall    : 0.7997669249530128
+mAP50     : 0.8437842788098742
+mAP50-95  : 0.5265330712918993
+
+
+then predict_yolo
+o/p: with a confidence value such as ulcer 0.87
+
+upto here :
+                 SMARTDFU
+                    │
+                    ▼
+            Wound Image Input
+                    │
+                    ▼
+             YOLOv8 Detection
+                    │
+             ┌──────┴──────┐
+             │             │
+             ▼             ▼
+        Ulcer box      Confidence
+             │
+             ▼
+       Detected ulcer
+
+
+next :
+YOLOv8
+   ↓
+Detected ulcer region
+   ↓
+DeepLabV3
+   ↓
+Precise ulcer segmentation
+   ↓
+Wound area / boundary
